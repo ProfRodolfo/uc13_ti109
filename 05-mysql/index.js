@@ -1,31 +1,29 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
-
 const mysql = require('mysql2')
 
 const app = express()
 
 app.engine('handlebars', exphbs.engine())
-app.set('views engine', 'handlebars' )
+app.set('view engine', 'handlebars')
+
 app.use(express.static('public'))
 
-
-app.use (
-    express.urlencoded({
-        extended: true,
-    }),
-)
-
-app.use(express.json())
-
-
 app.get('/', function (req, res) {
-    res.render('home')
+  res.render('home')
 })
 
+const conn = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'nodemysql',
+})
 
-// app.post('/books/insertbook') {
-//     function (req, res){
-
-//     }
-// }
+conn.connect(function (err) {
+  if (err) {
+    console.log(err)
+  }
+  console.log('Conectado ao MySQL!')
+  app.listen(3000)
+})
