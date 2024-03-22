@@ -36,37 +36,73 @@ app.post('/books/insertbook', function (req, res) {
   })
 })
 
-app.get('/books', function(req,res){
-    const query = `SELECT * FROM books`
+app.get('/books', function (req, res) {
+  const query = `SELECT * FROM books`
 
-    conn.query(query, function(err, data){
-        if (err) {
-            console.log(err)
-        }
-        const books = data
-        console.log(data)
+  conn.query(query, function (err, data) {
+    if (err) {
+      console.log(err)
+    }
 
-        res.render('books',{ books})
-    })
+    const books = data
+
+    console.log(data)
+
+    res.render('books', { books })
+  })
+})
+
+app.get('/books/:id', function (req, res) {
+  const id = req.params.id
+
+  const query = `SELECT * FROM books WHERE id = ${id}`
+
+  conn.query(query, function (err, data) {
+    if (err) {
+      console.log(err)
+    }
+
+    const book = data[0]
+
+    console.log(data[0])
+
+    res.render('book', { book })
+  })
 })
 
 app.get('/books/edit/:id', function (req, res) {
-    const id = req.params.id
-  
-    const query = `SELECT * FROM books WHERE id = ${id}`
-  
-    conn.query(query, function (err, data) {
-      if (err) {
-        console.log(err)
-      }
-  
-      const book = data[0]
-  
-      console.log(data[0])
-  
-      res.render('editbook', { book })
-    })
+  const id = req.params.id
+
+  const query = `SELECT * FROM books WHERE id = ${id}`
+
+  conn.query(query, function (err, data) {
+    if (err) {
+      console.log(err)
+    }
+
+    const book = data[0]
+
+    console.log(data[0])
+
+    res.render('editbook', { book })
   })
+})
+
+app.post('/books/updatebook', function (req, res) {
+  const id = req.body.id
+  const title = req.body.title
+  const pageqty = req.body.pageqty
+
+  const query = `UPDATE books SET title = '${title}', pageqty = ${pageqty} WHERE id = ${id}`
+
+  conn.query(query, function (err) {
+    if (err) {
+      console.log(err)
+    }
+
+    res.redirect(`/books/edit/${id}`)
+  })
+})
 
 const conn = mysql.createConnection({
   host: 'localhost',
