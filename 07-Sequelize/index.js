@@ -5,7 +5,7 @@ const app = express()
 
 const conn = require('./db/conn')
 
-const User = require('./model/User')
+const User = require('./models/User')
 
 app.engine('handlebars', exphbs.engine())
 app.set('view engine', 'handlebars')
@@ -20,13 +20,32 @@ app.use(express.json())
 
 app.use(express.static('public'))
 
-app.get('/', function (req, res){
-    res.render('home')
+app.get('/', function (req, res) {
+  res.render('home')
 })
 
-conn 
-    .sync()
-    .then(() => {
-        app.listen(3000)
-    })
-    .catch((err) => console.log(err))
+app.get('/users/create', function (req, res) {
+  res.render('adduser')
+})
+
+app.post('/users/create', function (req, res) {
+  const name = req.body.name
+  const occupation = req.body.occupation
+  let newsletter = req.body.newsletter
+
+  if (newsletter === 'on') {
+    newsletter = true
+  }
+
+  User.create({ name, occupation, newsletter })
+
+  res.redirect('/')
+})
+
+// Criar tabelas e rodar o app
+conn
+  .sync()
+  .then(() => {
+    app.listen(3000)
+  })
+  .catch((err) => console.log(err))
