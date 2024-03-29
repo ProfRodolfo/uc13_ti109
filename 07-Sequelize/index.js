@@ -21,7 +21,12 @@ app.use(express.json())
 app.use(express.static('public'))
 
 app.get('/', function (req, res) {
-  res.render('home')
+  User.findAll({raw: true})
+    .then((users) => {
+      console.log(users)
+      res.render('home', {users: users})
+    }) 
+    .catch((err) => console.log(err))
 })
 
 app.get('/users/create', function (req, res) {
@@ -41,6 +46,10 @@ app.post('/users/create', function (req, res) {
 
   res.redirect('/')
 })
+
+
+
+
 
 // Criar tabelas e rodar o app
 conn
