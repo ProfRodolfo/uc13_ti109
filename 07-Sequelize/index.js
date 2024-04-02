@@ -78,6 +78,55 @@ app.post('/users/delete/:id', function(req, res){
   .catch((err) => console.log(err))
 })
 
+app.get('/users/edit/:id', function (req, res) {
+  const id = req.params.id
+
+  User.findOne({
+    raw: true,
+    where: {
+      id: id,
+    },
+  })
+    .then((user) => {
+      console.log(user)
+      res.render('useredit', { user })
+    })
+    .catch((err) => console.log(err))
+})
+
+app.post('/users/update', function (req, res) {
+  const id = req.body.id
+  const name = req.body.name
+  const occupation = req.body.occupation
+  let newsletter = req.body.newsletter
+
+  if (newsletter === 'on') {
+    newsletter = true
+  } else {
+    newsletter = false
+  }
+
+  const userData = {
+    id,
+    name,
+    occupation,
+    newsletter,
+  }
+  console.log(req.body)
+  console.log(userData)
+
+  User.update(userData, {
+    where: {
+      id:id,
+    }
+  })
+  .then((user) => {
+    console.log(user)
+    res.redirect('/')
+  })
+  .catch((err) => console.log(err))
+})
+
 
 // Criar tabelas e rodar o app
 conn
